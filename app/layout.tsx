@@ -20,7 +20,7 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://YOURDOMAIN.com"), // <-- set your real domain
+  metadataBase: new URL("https://yoavassaf.com"),
   title: "Yoav Assaf - AI Product Manager",
   description:
     "AI Product Manager specializing in agent-based workflows for complex B2B processes. I turn slow, manual work into fast, human-supervised products.",

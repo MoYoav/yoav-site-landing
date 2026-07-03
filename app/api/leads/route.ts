@@ -1,8 +1,12 @@
-﻿import { mkdir, readFile, writeFile } from "fs/promises";
+import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
+
+const airtableToken = process.env.AIRTABLE_PERSONAL_ACCESS_TOKEN?.trim();
+const airtableBaseId = process.env.AIRTABLE_BASE_ID?.trim();
+const airtableTableName = process.env.AIRTABLE_TABLE_NAME?.trim();
 
 type Lead = {
   id: string;
@@ -48,6 +52,66 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function hasCompleteAirtableConfig() {
+  return Boolean(airtableToken && airtableBaseId && airtableTableName);
+}
+
+function hasPartialAirtableConfig() {
+  const values = [airtableToken, airtableBaseId, airtableTableName];
+  return values.some(Boolean) && !values.every(Boolean);
+}
+
+async function saveLeadLocally(lead: Lead) {
+  const dataDirectory = path.join(process.cwd(), "data");
+  const dataFile = path.join(dataDirectory, "leads.json");
+
+  await mkdir(dataDirectory, { recursive: true });
+
+  const leads = await readExistingLeads(dataFile);
+  leads.push(lead);
+
+  await writeFile(dataFile, JSON.stringify(leads, null, 2), "utf8");
+}
+
+async function saveLeadToAirtable(lead: Lead) {
+  if (!hasCompleteAirtableConfig()) {
+    throw new Error("Airtable is not fully configured.");
+  }
+
+  const response = await fetch(
+    `https://api.airtable.com/v0/${airtableBaseId}/${encodeURIComponent(airtableTableName!)}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${airtableToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        records: [
+          {
+            fields: {
+              leadId: lead.id,
+              name: lead.name,
+              email: lead.email,
+              phone: lead.phone,
+              sourcePath: lead.sourcePath,
+              submittedAt: lead.submittedAt,
+              userAgent: lead.userAgent ?? "",
+            },
+          },
+        ],
+      }),
+      cache: "no-store",
+    }
+  );
+
+  if (!response.ok) {
+    const detail = await response.text();
+    console.error("Airtable lead capture error:", response.status, detail);
+    throw new Error("Could not save the lead to Airtable.");
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -71,12 +135,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const dataDirectory = path.join(process.cwd(), "data");
-    const dataFile = path.join(dataDirectory, "leads.json");
-
-    await mkdir(dataDirectory, { recursive: true });
-
-    const leads = await readExistingLeads(dataFile);
     const newLead: Lead = {
       id: crypto.randomUUID(),
       name,
@@ -87,11 +145,24 @@ export async function POST(req: NextRequest) {
       userAgent: req.headers.get("user-agent"),
     };
 
-    leads.push(newLead);
+    if (hasPartialAirtableConfig()) {
+      return NextResponse.json(
+        {
+          error:
+            "Airtable lead storage is only partly configured. Add AIRTABLE_PERSONAL_ACCESS_TOKEN, AIRTABLE_BASE_ID, and AIRTABLE_TABLE_NAME, or remove them to keep local demo storage.",
+        },
+        { status: 500 }
+      );
+    }
 
-    await writeFile(dataFile, JSON.stringify(leads, null, 2), "utf8");
+    if (hasCompleteAirtableConfig()) {
+      await saveLeadToAirtable(newLead);
+      return NextResponse.json({ ok: true, storage: "airtable" });
+    }
 
-    return NextResponse.json({ ok: true });
+    await saveLeadLocally(newLead);
+
+    return NextResponse.json({ ok: true, storage: "local" });
   } catch (error) {
     console.error("Lead capture error:", error);
 
@@ -101,4 +172,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-

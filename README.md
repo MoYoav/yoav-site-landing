@@ -26,7 +26,8 @@ That makes it a good beginner-safe way to prove the full landing page workflow.
 - one clear landing page at `/`
 - one lead form with `name`, `email`, and `phone`
 - one thank-you page at `/thank-you`
-- local lead saving to `data/leads.json`
+- lead saving to Airtable when configured
+- local fallback lead saving to `data/leads.json`
 - conversion event structure on the thank-you page
 - GTM placeholder support
 - Meta Pixel placeholder support
@@ -59,6 +60,9 @@ NEXT_PUBLIC_META_PIXEL_ID=123456789012345
 NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
 NEXT_PUBLIC_GOOGLE_ADS_ID=AW-123456789
 NEXT_PUBLIC_GOOGLE_ADS_CONVERSION_LABEL=AbCdEfGhIjKlMnOpQr
+AIRTABLE_PERSONAL_ACCESS_TOKEN=pat...
+AIRTABLE_BASE_ID=appXXXXXXXXXXXXXX
+AIRTABLE_TABLE_NAME=Leads
 ANTHROPIC_API_KEY=sk-ant-...
 ```
 
@@ -79,18 +83,39 @@ Tracking code only fires on the successful lead flow, using the thank-you page.
 4. Enter a test name, email, and phone number
 5. Submit the form
 6. Confirm you land on `http://localhost:3000/thank-you`
-7. Open `data/leads.json`
-8. Confirm the new lead was saved there
+7. If Airtable is configured, confirm the new row appears in Airtable
+8. If Airtable is not configured, open `data/leads.json`
+9. Confirm the new lead was saved there
 
 ## Lead storage note
 
-For this demo, leads are saved locally to `data/leads.json` because it is the fastest reliable proof inside the current stack.
+If Airtable is configured, new leads are saved there first.
 
-For a real client project, that would usually be replaced with one of these:
+If Airtable is not configured yet, the app falls back to `data/leads.json` so the full flow still works locally.
+
+## Airtable setup
+
+This is the recommended beginner-safe live storage path for this project because it works well with Vercel and does not need a separate database.
+
+1. Create an Airtable base.
+2. Create a table and put its name into `AIRTABLE_TABLE_NAME`.
+3. Add these fields in that table exactly:
+   `leadId`, `name`, `email`, `phone`, `sourcePath`, `submittedAt`, `userAgent`
+4. Create an Airtable personal access token with record write access to that base.
+5. Add these values to `.env.local` and to Vercel project settings:
+
+```env
+AIRTABLE_PERSONAL_ACCESS_TOKEN=pat...
+AIRTABLE_BASE_ID=appXXXXXXXXXXXXXX
+AIRTABLE_TABLE_NAME=Leads
+```
+
+Once those three values are set, live lead submissions will go to Airtable instead of the local JSON file.
+
+For a real client project, other common storage options are still:
 
 - a CRM
 - a real database
-- Airtable
 - Google Sheets
 - a form backend service
 
@@ -125,9 +150,9 @@ Example:
 - Meta Pixel ID
 - GA4 measurement ID
 - Google Ads conversion ID and label
+- Airtable token, base ID, and table name if you want real hosted lead storage
 - a real deployment account such as Vercel or Netlify
 - a real domain registrar or DNS provider
-- a real persistent lead destination if the page goes live
 
 ## AI assistant
 

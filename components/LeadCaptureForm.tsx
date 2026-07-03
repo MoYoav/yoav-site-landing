@@ -125,11 +125,12 @@ export default function LeadCaptureForm() {
       </label>
 
       <p className="text-sm leading-relaxed text-[var(--paper)]/70">
-        Demo note: this form saves submissions locally to
+        Storage note: if Airtable is configured, this form saves there. If not,
+        it falls back to
         {" "}
         <code>data/leads.json</code>
         {" "}
-        so you can practice the full flow without setting up a database yet.
+        so you can keep practicing locally without a database.
       </p>
 
       {errorMessage ? (

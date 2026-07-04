@@ -182,12 +182,12 @@ export async function POST(req: NextRequest) {
 
     if (hasCompleteAirtableConfig()) {
       await saveLeadToAirtable(newLead);
-      void sendEmails(newLead);
+      await sendEmails(newLead);
       return NextResponse.json({ ok: true, storage: "airtable" });
     }
 
     await saveLeadLocally(newLead);
-    void sendEmails(newLead);
+    await sendEmails(newLead);
 
     return NextResponse.json({ ok: true, storage: "local" });
   } catch (error) {

@@ -1,495 +1,378 @@
-﻿"use client";
+"use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
-import Assistant from "@/components/Assistant";
+import ThreadFigure from "@/components/ThreadFigure";
 import LeadCaptureForm from "@/components/LeadCaptureForm";
+import Assistant from "@/components/Assistant";
 
 export default function Home() {
+  const revealRefs = useRef<HTMLElement[]>([]);
+
   useEffect(() => {
-    const els = document.querySelectorAll(".reveal");
-    const io = new IntersectionObserver(
+    const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add("in");
-            io.unobserve(e.target);
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.1 }
     );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    revealRefs.current.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
   }, []);
 
+  const addReveal = (el: HTMLElement | null) => {
+    if (el && !revealRefs.current.includes(el)) {
+      revealRefs.current.push(el);
+    }
+  };
+
   return (
-    <main className="overflow-x-hidden">
-      <Nav />
-      <Hero />
-      <WhatIDo />
-      <Work />
-      <About />
-      <Contact />
-      <Footer />
+    <main style={{ fontFamily: "var(--font-body), 'Instrument Sans', system-ui, sans-serif", background: "#FAF9F6", color: "#1C1917" }}>
+
+      {/* ===== HERO ===== */}
+      <section
+        style={{
+          minHeight: "100vh",
+          background: "#12100E",
+          color: "#FAF9F6",
+          display: "flex",
+          flexDirection: "column",
+          boxSizing: "border-box",
+          padding: "clamp(24px, 4vw, 48px)",
+        }}
+      >
+        {/* top bar */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "16px" }}>
+          <div style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "13px", letterSpacing: "0.04em", color: "#FAF9F6" }}>
+            Yoav Assaf
+          </div>
+          <div style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.08em", color: "rgba(250,249,246,0.4)" }}>
+            TLV · 2026
+          </div>
+        </div>
+
+        {/* headline block */}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", maxWidth: "1100px", margin: "0 auto", width: "100%", padding: "64px 0 32px 0" }}>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "28px" }}>
+            <span style={{ display: "block", width: "22px", height: "1px", background: "#4A6B8A" }} />
+            <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "12px", letterSpacing: "0.22em", color: "rgba(250,249,246,0.55)" }}>
+              AI PRODUCT MANAGER
+            </span>
+          </div>
+
+          <h1 style={{
+            fontFamily: "var(--font-display), 'Instrument Serif', serif",
+            fontWeight: 400,
+            fontSize: "clamp(44px, 7.2vw, 92px)",
+            lineHeight: 1.04,
+            letterSpacing: "-0.01em",
+            margin: "0 0 28px 0",
+          }}>
+            I take complex processes and make them{" "}
+            <em style={{ fontStyle: "italic", color: "#4A6B8A" }}>simple</em>.
+          </h1>
+
+          <p style={{ fontSize: "clamp(17px, 1.6vw, 20px)", lineHeight: 1.5, color: "rgba(250,249,246,0.62)", margin: "0 0 40px 0", maxWidth: "46ch" }}>
+            A product manager who builds — mostly AI, hands-on.
+          </p>
+
+          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+            <HeroButton href="#how">See how I build</HeroButton>
+            <HeroButton href="#contact">Get in touch</HeroButton>
+          </div>
+        </div>
+
+        {/* thread figure */}
+        <div style={{ maxWidth: "1100px", margin: "0 auto", width: "100%" }}>
+          <ThreadFigure />
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+            <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.08em", color: "rgba(250,249,246,0.3)" }}>FIG. 01</span>
+            <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.08em", color: "rgba(250,249,246,0.3)" }}>COMPLEX → SIMPLE</span>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== HOW I BUILD ===== */}
+      <section
+        id="how"
+        style={{ background: "#FAF9F6", padding: "clamp(72px, 10vw, 140px) clamp(24px, 4vw, 48px)" }}
+      >
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+
+          <div
+            ref={addReveal}
+            className="reveal"
+            style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "24px" }}
+          >
+            <span style={{ display: "block", width: "22px", height: "1px", background: "#4A6B8A" }} />
+            <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "12px", letterSpacing: "0.22em", color: "#78716C" }}>
+              02 · HOW I BUILD AI PRODUCTS
+            </span>
+          </div>
+
+          <p
+            ref={addReveal}
+            className="reveal"
+            style={{
+              fontFamily: "var(--font-display), 'Instrument Serif', serif",
+              fontSize: "clamp(26px, 3.2vw, 38px)",
+              lineHeight: 1.25,
+              margin: "0 0 clamp(48px, 6vw, 80px) 0",
+              maxWidth: "24ch",
+              color: "#1C1917",
+            }}
+          >
+            A few things I&rsquo;ve come to care about when building with AI.
+          </p>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "clamp(28px, 3.5vw, 48px)" }}>
+            {[
+              {
+                kicker: "01 · SCAFFOLD",
+                heading: "The structure around the model",
+                body: "A model on its own isn't much. The useful part is what surrounds it — the tools it can call, the guardrails that keep it in bounds, the way the whole thing is wired together. That structure is what turns a model into something that can actually do the work.",
+              },
+              {
+                kicker: "02 · LOOP",
+                heading: "The agent loop",
+                body: "This is where it runs: the agent calls a tool, gets a response, decides what's next, and goes again. Getting that cycle right — the right tools, clean calls, sensible stopping points — is most of what makes an agent dependable instead of unpredictable.",
+              },
+              {
+                kicker: "03 · REFINE",
+                heading: "Making it better over time",
+                body: "Things break, and the skill is knowing where. Evals and a human in the loop catch the failures, then the fix goes to wherever the problem actually lives — the prompt, the context, a tool, a guardrail. Not guesswork. Diagnosis, then the right fix.",
+              },
+            ].map((card) => (
+              <BuildCard key={card.kicker} {...card} addReveal={addReveal} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== ABOUT ===== */}
+      <section
+        id="about"
+        style={{ background: "#F3F1EC", padding: "clamp(72px, 10vw, 140px) clamp(24px, 4vw, 48px)" }}
+      >
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+
+          <div
+            ref={addReveal}
+            className="reveal"
+            style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "clamp(40px, 5vw, 64px)" }}
+          >
+            <span style={{ display: "block", width: "22px", height: "1px", background: "#4A6B8A" }} />
+            <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "12px", letterSpacing: "0.22em", color: "#78716C" }}>
+              03 · ABOUT
+            </span>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "clamp(40px, 6vw, 88px)", alignItems: "start" }}>
+
+            <div
+              ref={addReveal}
+              className="reveal"
+              style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "520px" }}
+            >
+              <Image
+                src="/headshot.jpeg"
+                alt="Yoav Assaf — black-and-white portrait"
+                width={520}
+                height={640}
+                style={{ display: "block", width: "100%", height: "auto", filter: "grayscale(1)", borderRadius: "4px" }}
+              />
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.08em", color: "#A8A29E" }}>FIG. 02</span>
+                <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.08em", color: "#A8A29E" }}>YOAV ASSAF</span>
+              </div>
+            </div>
+
+            <div
+              ref={addReveal}
+              className="reveal"
+              style={{ display: "flex", flexDirection: "column", gap: "24px", fontSize: "17px", lineHeight: 1.7, color: "#44403C" }}
+            >
+              <p style={{ margin: 0 }}>I started out closer to the engineering side — an industrial engineering degree, then years implementing systems for customers, working directly with the people who had to live with what got built. That&rsquo;s where the instinct came from: understand the whole process, and the people in it, before touching a solution.</p>
+              <p style={{ margin: 0 }}>From there into R&amp;D project management — running the delivery side, Agile and Scrum, keeping teams moving and shipping without the process turning into overhead. Then into product, which is where I wanted to be all along: not just delivering what was decided, but deciding what&rsquo;s worth building.</p>
+              <p style={{ margin: 0 }}>What keeps me here is taking something tangled and making it simpler, and lately doing that with AI. I like being hands-on: not handing off specs and hoping, but building and seeing if the thing actually holds up.</p>
+              <p style={{ margin: 0 }}>I&rsquo;m a people person more than a spec person. I listen, I learn quickly, and I&rsquo;m comfortable when things are unclear and there&rsquo;s no obvious right answer.</p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CONTACT ===== */}
+      <section
+        id="contact"
+        style={{ background: "#12100E", color: "#FAF9F6", padding: "clamp(72px, 10vw, 140px) clamp(24px, 4vw, 48px)" }}
+      >
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+
+          <div
+            ref={addReveal}
+            className="reveal"
+            style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "24px" }}
+          >
+            <span style={{ display: "block", width: "22px", height: "1px", background: "#4A6B8A" }} />
+            <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "12px", letterSpacing: "0.22em", color: "rgba(250,249,246,0.5)" }}>
+              04 · CONTACT
+            </span>
+          </div>
+
+          {/* two-column: left = copy + links, right = form */}
+          <div
+            ref={addReveal}
+            className="reveal"
+            style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "clamp(48px, 7vw, 96px)", alignItems: "start" }}
+          >
+            {/* left column */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "clamp(32px, 4vw, 48px)" }}>
+              <h2 style={{
+                fontFamily: "var(--font-display), 'Instrument Serif', serif",
+                fontWeight: 400,
+                fontSize: "clamp(30px, 4.4vw, 54px)",
+                lineHeight: 1.15,
+                margin: 0,
+                maxWidth: "22ch",
+              }}>
+                Open to product roles and select consulting engagements.
+              </h2>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "clamp(20px, 3vw, 32px)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", borderTop: "1px solid rgba(250,249,246,0.15)", paddingTop: "20px" }}>
+                  <div style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.12em", color: "rgba(250,249,246,0.45)" }}>FOR EMPLOYERS</div>
+                  <p style={{ fontSize: "15px", lineHeight: 1.65, color: "rgba(250,249,246,0.72)", margin: 0 }}>A product role where building is part of the job, not something I hand off. AI especially.</p>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", borderTop: "1px solid rgba(250,249,246,0.15)", paddingTop: "20px" }}>
+                  <div style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.12em", color: "rgba(250,249,246,0.45)" }}>FOR CLIENTS</div>
+                  <p style={{ fontSize: "15px", lineHeight: 1.65, color: "rgba(250,249,246,0.72)", margin: 0 }}>Consulting on AI product design — agent workflows, process simplification, and human-in-the-loop systems.</p>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+                <ContactButton href="mailto:yoavs217@gmail.com">yoavs217@gmail.com</ContactButton>
+                <ContactButton href="https://linkedin.com/in/yoav-assaf-b82b3518b" target="_blank">LinkedIn</ContactButton>
+                <ContactButton href="/Resume.pdf" target="_blank">Resume PDF</ContactButton>
+              </div>
+            </div>
+
+            {/* right column: form */}
+            <div style={{ borderTop: "1px solid rgba(250,249,246,0.15)", paddingTop: "20px" }}>
+              <div style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.12em", color: "rgba(250,249,246,0.45)", marginBottom: "24px" }}>
+                LEAVE YOUR DETAILS
+              </div>
+              <LeadCaptureForm />
+            </div>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: "clamp(64px, 8vw, 96px)", paddingTop: "24px", borderTop: "1px solid rgba(250,249,246,0.1)" }}>
+            <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.08em", color: "rgba(250,249,246,0.3)" }}>YOAV ASSAF · 2026</span>
+            <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.08em", color: "rgba(250,249,246,0.3)" }}>COMPLEX → SIMPLE</span>
+          </div>
+        </div>
+      </section>
+
       <Assistant />
     </main>
   );
 }
 
-/* ---------------- NAV ---------------- */
-function Nav() {
+function HeroButton({ href, children }: { href: string; children: React.ReactNode }) {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[var(--paper)]/80 border-b border-[var(--line)]">
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="#top" className="display font-bold text-lg tracking-tight">
-          Yoav Assaf
-        </a>
-        <div className="hidden sm:flex items-center gap-8 text-sm font-medium">
-          <a href="#work" className="hover:text-[var(--signal)] transition-colors">Work</a>
-          <a href="#about" className="hover:text-[var(--signal)] transition-colors">About</a>
-          <a
-            href="#lead-form"
-            className="px-4 py-2 bg-[var(--ink)] text-[var(--paper)] rounded-full hover:bg-[var(--signal)] transition-colors"
-          >
-            Leave details
-          </a>
-        </div>
-      </div>
-    </nav>
+    <a
+      href={href}
+      style={{
+        fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace",
+        fontSize: "13px",
+        letterSpacing: "0.03em",
+        color: "#FAF9F6",
+        textDecoration: "none",
+        border: "1px solid rgba(250,249,246,0.25)",
+        borderRadius: "4px",
+        padding: "13px 22px",
+        transition: "border-color 0.25s ease, color 0.25s ease",
+        display: "inline-block",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLAnchorElement).style.borderColor = "#4A6B8A";
+        (e.currentTarget as HTMLAnchorElement).style.color = "#4A6B8A";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(250,249,246,0.25)";
+        (e.currentTarget as HTMLAnchorElement).style.color = "#FAF9F6";
+      }}
+    >
+      {children}
+    </a>
   );
 }
 
-/* ---------------- HERO ---------------- */
-function Hero() {
+function ContactButton({ href, children, target }: { href: string; children: React.ReactNode; target?: string }) {
   return (
-    <section id="top" className="pt-36 pb-24 px-6">
-      <div className="max-w-6xl mx-auto">
-        <p className="mono text-sm text-[var(--signal)] mb-6 tracking-wide">
-          AI PRODUCT MANAGER
-        </p>
-        <h1 className="display font-bold tracking-tight leading-[0.98] text-[clamp(2.6rem,7vw,5.5rem)] max-w-4xl">
-          I take complex processes and make them{" "}
-          <span className="text-[var(--signal)]">simple.</span>
-        </h1>
-        <p className="mt-8 text-lg md:text-xl text-[var(--ink-soft)] max-w-2xl leading-relaxed">
-          Product Manager for B2B and AI products. I turn tangled,
-          people-heavy workflows into clear products that teams actually
-          adopt - increasingly by putting AI agents to work inside the
-          process itself.
-        </p>
-        <div className="mt-10 flex flex-wrap gap-4">
-          <a
-            href="#work"
-            className="px-6 py-3 bg-[var(--ink)] text-[var(--paper)] rounded-full font-medium hover:bg-[var(--signal)] transition-colors"
-          >
-            View my work
-          </a>
-          <a
-            href="#lead-form"
-            className="px-6 py-3 border border-[var(--ink)] rounded-full font-medium hover:bg-[var(--ink)] hover:text-[var(--paper)] transition-colors"
-          >
-            Leave your details
-          </a>
-        </div>
-
-        {/* Signature element: complexity -> clarity */}
-        <ComplexityDiagram />
-      </div>
-    </section>
+    <a
+      href={href}
+      target={target}
+      rel={target === "_blank" ? "noopener noreferrer" : undefined}
+      style={{
+        fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace",
+        fontSize: "13px",
+        letterSpacing: "0.03em",
+        color: "#FAF9F6",
+        textDecoration: "none",
+        border: "1px solid rgba(250,249,246,0.25)",
+        borderRadius: "4px",
+        padding: "13px 22px",
+        transition: "border-color 0.25s ease, color 0.25s ease",
+        display: "inline-block",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLAnchorElement).style.borderColor = "#4A6B8A";
+        (e.currentTarget as HTMLAnchorElement).style.color = "#4A6B8A";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLAnchorElement).style.borderColor = "rgba(250,249,246,0.25)";
+        (e.currentTarget as HTMLAnchorElement).style.color = "#FAF9F6";
+      }}
+    >
+      {children}
+    </a>
   );
 }
 
-function ComplexityDiagram() {
+function BuildCard({
+  kicker,
+  heading,
+  body,
+  addReveal,
+}: {
+  kicker: string;
+  heading: string;
+  body: string;
+  addReveal: (el: HTMLElement | null) => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (ref.current) addReveal(ref.current);
+  }, [addReveal]);
+
   return (
-    <div className="mt-20 reveal">
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 md:gap-10 max-w-3xl">
-        {/* Before: tangle */}
-        <div className="text-center">
-          <svg viewBox="0 0 160 120" className="w-full max-w-[200px] mx-auto" aria-hidden="true">
-            {[...Array(8)].map((_, i) => {
-              const angle = (i / 8) * Math.PI * 2;
-              const x = 80 + Math.cos(angle) * 45;
-              const y = 60 + Math.sin(angle) * 40;
-              return (
-                <g key={i}>
-                  {[...Array(8)].map((_, j) => {
-                    if (j <= i) return null;
-                    const a2 = (j / 8) * Math.PI * 2;
-                    const x2 = 80 + Math.cos(a2) * 45;
-                    const y2 = 60 + Math.sin(a2) * 40;
-                    return (
-                      <line
-                        key={j}
-                        x1={x} y1={y} x2={x2} y2={y2}
-                        stroke="var(--slate)" strokeWidth="0.5" opacity="0.4"
-                      />
-                    );
-                  })}
-                  <circle cx={x} cy={y} r="5" fill="var(--ink-soft)" />
-                </g>
-              );
-            })}
-          </svg>
-          <p className="mono text-xs text-[var(--slate)] mt-3">8 users - scattered</p>
-        </div>
-
-        {/* Arrow */}
-        <div className="text-[var(--signal)] text-2xl md:text-3xl">-&gt;</div>
-
-        {/* After: clean */}
-        <div className="text-center">
-          <svg viewBox="0 0 160 120" className="w-full max-w-[200px] mx-auto" aria-hidden="true">
-            <rect x="40" y="35" width="80" height="50" rx="6" fill="none" stroke="var(--signal)" strokeWidth="2" />
-            {[...Array(4)].map((_, i) => (
-              <circle key={i} cx={58 + i * 15} cy="60" r="5" fill="var(--signal)" />
-            ))}
-          </svg>
-          <p className="mono text-xs text-[var(--signal)] mt-3">4 users - one dashboard</p>
-        </div>
-      </div>
+    <div
+      ref={ref}
+      className="reveal"
+      style={{ display: "flex", flexDirection: "column", gap: "16px", borderTop: "1px solid #E7E4DE", paddingTop: "24px", transition: "border-color 0.4s ease" }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.borderTopColor = "#4A6B8A"; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.borderTopColor = "#E7E4DE"; }}
+    >
+      <div style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.12em", color: "#A8A29E" }}>{kicker}</div>
+      <h3 style={{ fontFamily: "var(--font-display), 'Instrument Serif', serif", fontWeight: 400, fontSize: "26px", lineHeight: 1.2, margin: 0, color: "#1C1917" }}>{heading}</h3>
+      <p style={{ fontSize: "16px", lineHeight: 1.65, color: "#44403C", margin: 0 }}>{body}</p>
     </div>
   );
 }
-
-/* ---------------- WHAT I DO ---------------- */
-function WhatIDo() {
-  const items = [
-    {
-      k: "01",
-      t: "AI agent workflows",
-      d: "Agent-based processes with real context management - not one-off prompts - that do meaningful work inside the product.",
-    },
-    {
-      k: "02",
-      t: "Process simplification",
-      d: "Map the whole workflow and the people in it, then collapse it into something fewer people can run, faster.",
-    },
-    {
-      k: "03",
-      t: "Human-in-the-loop systems",
-      d: "AI does the heavy lifting; people review and validate. Essential for regulated, high-stakes environments.",
-    },
-  ];
-  return (
-    <section className="px-6 py-20 border-t border-[var(--line)]">
-      <div className="max-w-6xl mx-auto">
-        <p className="mono text-sm text-[var(--slate)] mb-10 reveal">WHAT I DO</p>
-        <div className="grid md:grid-cols-3 gap-10">
-          {items.map((it) => (
-            <div key={it.k} className="reveal">
-              <span className="mono text-sm text-[var(--signal)]">{it.k}</span>
-              <h3 className="display font-semibold text-xl mt-3 mb-2">{it.t}</h3>
-              <p className="text-[var(--ink-soft)] leading-relaxed">{it.d}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- WORK ---------------- */
-function Work() {
-  return (
-    <section id="work" className="px-6 py-20 border-t border-[var(--line)] bg-[var(--paper-pure)]">
-      <div className="max-w-6xl mx-auto">
-        <p className="mono text-sm text-[var(--slate)] mb-3 reveal">SELECTED WORK</p>
-        <h2 className="display font-bold text-3xl md:text-4xl mb-16 reveal max-w-2xl">
-          Two ways I&apos;ve used AI to collapse slow, manual work into fast, supervised processes.
-        </h2>
-
-        <CaseStudy
-          index="Case 01"
-          title="AI-assisted workflow consolidation"
-          company="Mobideo"
-          summary="Replaced a fragmented, 8-person workflow with a single AI-assisted dashboard - halving the team needed and saving the remaining members 70% of their time."
-          metrics={[
-            { v: "8 -> 4", l: "users required" },
-            { v: "70%", l: "time saved per user" },
-            { v: "50%", l: "smaller team" },
-          ]}
-          blocks={[
-            {
-              h: "The problem",
-              p: "At Mobideo, a B2B platform for managing complex industrial operations, a core workflow was spread across eight different users - each handling their own tasks, checklists, and file uploads, with no single place to see or coordinate the work. It was slow, people-heavy, and error-prone.",
-            },
-            {
-              h: "My role",
-              p: "I led this end to end - driving the design and build largely on my own using AI tools, with some support from a developer. I owned the workflow design, the dashboard UX, and the integration of AI agents into the process.",
-            },
-            {
-              h: "Key decisions",
-              list: [
-                "Consolidated a multi-step, multi-user process into one dashboard rather than improving each step in isolation.",
-                "Embedded AI agents directly into the workflow so the system handled more of the work automatically.",
-                "Designed for fewer, more empowered users - a deliberate bet on efficiency and cost savings.",
-              ],
-            },
-            {
-              h: "AI quality & iteration",
-              p: "To make sure cutting the team in half didn't lower quality, I built an evaluation and feedback loop into the process. Agent output was checked against expected results, and reviewer corrections fed back as a source of improvement - so the agents got more reliable over time. The dashboard made it clear what the AI had done versus what needed a human, which kept users trusting the system instead of re-checking everything.",
-            },
-          ]}
-        />
-
-        <CaseStudy
-          index="Case 02"
-          title="AI conversion of manual procedures into digital checklists"
-          company="Mobideo"
-          summary="Built an AI workflow that converts customers' manual procedures into Mobideo-ready digital checklists - turning weeks of manual work into a fast, human-in-the-loop review."
-          metrics={[
-            { v: "Weeks -> review", l: "conversion effort" },
-            { v: "~50", l: "procedures validated" },
-            { v: "FDA-grade", l: "accuracy preserved" },
-          ]}
-          blocks={[
-            {
-              h: "The problem",
-              p: "Mobideo customers need to turn manual instructions and procedures into digital checklists to use them in the platform. Doing it by hand could take weeks, and in many cases the output has to meet FDA standards - so accuracy is non-negotiable and every error carries compliance risk.",
-            },
-            {
-              h: "My role",
-              p: "I designed the AI workflow end to end - defining how the system interprets each customer's needs, manages context across the conversion, and produces output in the exact format they require.",
-            },
-            {
-              h: "Key decisions",
-              list: [
-                "Built it as an agent-based process with deliberate context management, rather than a single prompt, to handle long and complex procedures reliably.",
-                "Designed around a human-in-the-loop model: AI does the heavy conversion, people review and validate.",
-                "Made output adapt to each customer's desired format instead of forcing one rigid template.",
-              ],
-            },
-            {
-              h: "AI quality & iteration",
-              p: "Given the FDA-grade accuracy requirements, getting the conversion right mattered more than getting it fast. I tested the workflow on a set of ~50 sample procedures and ran an iterative loop with subject-matter experts: SMEs reviewed the AI's output, flagged what was wrong or imprecise, and I used their feedback to refine the prompts and the context the agents worked from. Each round tightened the output - while the SME validation step stayed in place as the auditable human control that kept the process compliant.",
-            },
-          ]}
-        />
-      </div>
-    </section>
-  );
-}
-
-type Block = { h: string; p?: string; list?: string[] };
-function CaseStudy({
-  index,
-  title,
-  company,
-  summary,
-  metrics,
-  blocks,
-}: {
-  index: string;
-  title: string;
-  company: string;
-  summary: string;
-  metrics: { v: string; l: string }[];
-  blocks: Block[];
-}) {
-  return (
-    <article className="reveal mb-24 last:mb-0">
-      <div className="flex items-baseline gap-4 mb-2">
-        <span className="mono text-sm text-[var(--signal)]">{index}</span>
-        <span className="mono text-sm text-[var(--slate)]">{company}</span>
-      </div>
-      <h3 className="display font-bold text-2xl md:text-3xl mb-4 max-w-3xl">{title}</h3>
-      <p className="text-lg text-[var(--ink-soft)] max-w-3xl mb-8 leading-relaxed">{summary}</p>
-
-      <div className="grid grid-cols-3 gap-4 mb-10 max-w-2xl">
-        {metrics.map((m) => (
-          <div key={m.l} className="border-l-2 border-[var(--signal)] pl-4">
-            <div className="display font-bold text-2xl md:text-3xl">{m.v}</div>
-            <div className="mono text-xs text-[var(--slate)] mt-1 leading-snug">{m.l}</div>
-          </div>
-        ))}
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 max-w-4xl">
-        {blocks.map((b) => (
-          <div key={b.h}>
-            <h4 className="mono text-sm text-[var(--ink)] mb-2 font-medium">{b.h}</h4>
-            {b.p && <p className="text-[var(--ink-soft)] leading-relaxed">{b.p}</p>}
-            {b.list && (
-              <ul className="space-y-2">
-                {b.list.map((li, i) => (
-                  <li key={i} className="text-[var(--ink-soft)] leading-relaxed flex gap-2">
-                    <span className="text-[var(--signal)] mt-1">-</span>
-                    <span>{li}</span>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        ))}
-      </div>
-    </article>
-  );
-}
-
-/* ---------------- ABOUT ---------------- */
-function About() {
-  return (
-    <section id="about" className="px-6 py-20 border-t border-[var(--line)]">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-[1fr_1.3fr] gap-12 md:gap-20">
-        <div className="reveal">
-          <p className="mono text-sm text-[var(--slate)] mb-6">ABOUT</p>
-          <p className="display text-2xl md:text-3xl font-medium leading-snug">
-            An AI Product Manager who builds hands-on - not just specs things out.
-          </p>
-          <div className="mt-10 space-y-1">
-            {[
-              ["Product Manager", "Mobideo - 2023-present"],
-              ["R&D Project Manager", "Mobideo - 2021-2023"],
-              ["System Implementation Specialist", "Ness Digital Engineering - 2020"],
-              ["Implementation Specialist", "SRP Analytics - 2019-2020"],
-            ].map(([role, meta]) => (
-              <div key={role} className="py-3 border-b border-[var(--line)]">
-                <div className="font-semibold">{role}</div>
-                <div className="mono text-xs text-[var(--slate)] mt-0.5">{meta}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="reveal space-y-5 text-[var(--ink-soft)] leading-relaxed">
-          <Image
-            src="/Yoav.jpg"
-            alt="Yoav Assaf"
-            width={120}
-            height={120}
-            className="rounded-full mb-6 object-cover"
-          />
-          <p>
-            I didn&apos;t start in product - I started in environments where clarity
-            under complexity was everything. After serving as a squad commander in
-            an elite IDF commando unit, I studied Industrial Engineering with a focus
-            on entrepreneurship and innovation. That mix is exactly the instinct AI
-            product work demands: see the whole process, then redesign it.
-          </p>
-          <p>
-            I moved into software through implementation roles, working directly with
-            clients to fit systems to how they actually operate. That front-line
-            exposure to real user pain led me into R&D project management, running
-            Agile teams and learning to ship complex features reliably.
-          </p>
-          <p>
-            Today, as a Product Manager at Mobideo, I&apos;ve made AI the core of my
-            craft. I design agent-based workflows with real context management and
-            human-in-the-loop validation, and I build them hands-on - cutting an
-            8-person workflow in half, and turning weeks of manual, FDA-grade
-            procedure conversion into a fast review-and-approve step.
-          </p>
-          <div className="pt-4">
-            <p className="mono text-sm text-[var(--ink)] mb-3">HOW I WORK</p>
-            <ul className="space-y-2">
-              {[
-                "AI as the engine, not the gimmick - agent workflows that do real work.",
-                "Humans stay in control, especially in regulated, high-stakes settings.",
-                "Start from the process, not the feature.",
-                "Build hands-on - design, prototype, and ship myself.",
-              ].map((li) => (
-                <li key={li} className="flex gap-2">
-                  <span className="text-[var(--signal)] mt-1">-</span>
-                  <span>{li}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ---------------- CONTACT ---------------- */
-function Contact() {
-  return (
-    <section id="contact" className="px-6 py-24 border-t border-[var(--line)] bg-[var(--ink)] text-[var(--paper)]">
-      <div className="max-w-6xl mx-auto reveal">
-        <div className="grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
-          <div>
-            <p className="mono text-sm text-[var(--signal)] mb-6">WORK WITH ME</p>
-            <h2 className="display font-bold text-3xl md:text-5xl max-w-3xl leading-tight">
-              Open to product roles and select consulting engagements.
-            </h2>
-            <p className="mt-6 text-lg text-[var(--paper)]/70 max-w-2xl leading-relaxed">
-              Whether you&apos;re hiring for an AI product role or need help turning a
-              complex workflow into a working AI-powered product, I&apos;d love to hear
-              from you.
-            </p>
-
-            <div className="mt-12 grid sm:grid-cols-2 gap-8 max-w-2xl">
-              <div>
-                <p className="mono text-xs text-[var(--paper)]/50 mb-2">FOR EMPLOYERS</p>
-                <p className="text-[var(--paper)]/80">
-                  AI/B2B product roles where I can own strategy and build agent-based
-                  workflows end to end.
-                </p>
-              </div>
-              <div>
-                <p className="mono text-xs text-[var(--paper)]/50 mb-2">FOR CLIENTS</p>
-                <p className="text-[var(--paper)]/80">
-                  Consulting on AI product design: agent workflows, process
-                  simplification, and human-in-the-loop systems.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-12 flex flex-wrap gap-4">
-              <a
-                href="mailto:yoavs217@gmail.com"
-                className="px-6 py-3 bg-[var(--signal)] text-white rounded-full font-medium hover:bg-[var(--signal-deep)] transition-colors"
-              >
-                yoavs217@gmail.com
-              </a>
-              <a
-                href="https://www.linkedin.com/in/yoav-assaf-b82b3518b/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-3 border border-[var(--paper)]/30 rounded-full font-medium hover:bg-[var(--paper)] hover:text-[var(--ink)] transition-colors"
-              >
-                LinkedIn
-              </a>
-              <a
-                href="/Resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-3 border border-[var(--paper)]/30 rounded-full font-medium hover:bg-[var(--paper)] hover:text-[var(--ink)] transition-colors"
-              >
-                Resume
-              </a>
-            </div>
-          </div>
-
-          <div className="rounded-[1.5rem] border border-white/10 bg-white/5 p-6 md:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.18)]">
-            <p className="mono text-xs text-[var(--signal)] mb-3">LEAVE YOUR DETAILS</p>
-            <h3 className="display text-2xl font-semibold leading-tight">
-              Tell me what you need and I will get back to you.
-            </h3>
-            <p className="mt-4 text-sm leading-relaxed text-[var(--paper)]/70">
-              This keeps your existing page intact, but adds the core landing page flow:
-              a lead form, a thank-you step, and a simple place to store submissions while
-              you practice.
-            </p>
-
-            <div className="mt-6">
-              <LeadCaptureForm />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-function Footer() {
-  return (
-    <footer className="px-6 py-10 bg-[var(--ink)] border-t border-white/10 text-[var(--paper)]/50">
-      <div className="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-4 text-sm">
-        <span className="display font-semibold text-[var(--paper)]">Yoav Assaf</span>
-        <span className="mono text-xs">AI Product Manager - {new Date().getFullYear()}</span>
-      </div>
-    </footer>
-  );
-}
-

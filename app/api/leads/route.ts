@@ -1,8 +1,11 @@
 import { mkdir, readFile, writeFile } from "fs/promises";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 
 export const runtime = "nodejs";
+
+const resendApiKey = process.env.RESEND_API_KEY?.trim();
 
 const airtableToken = process.env.AIRTABLE_PERSONAL_ACCESS_TOKEN?.trim();
 const airtableBaseId = process.env.AIRTABLE_BASE_ID?.trim();
@@ -112,6 +115,28 @@ async function saveLeadToAirtable(lead: Lead) {
   }
 }
 
+async function sendEmails(lead: Lead) {
+  if (!resendApiKey) return;
+  const resend = new Resend(resendApiKey);
+
+  await Promise.allSettled([
+    // auto-reply to the person who submitted
+    resend.emails.send({
+      from: "Yoav Assaf <hello@yoavassaf.com>",
+      to: lead.email,
+      subject: "Got your details — I'll be in touch",
+      html: `<p>Hi ${lead.name},</p><p>Thanks for reaching out. I got your details and will be in touch shortly.</p><p>— Yoav</p>`,
+    }),
+    // notification to Yoav
+    resend.emails.send({
+      from: "Site <hello@yoavassaf.com>",
+      to: "yoavs217@gmail.com",
+      subject: `New contact: ${lead.name}`,
+      html: `<p><strong>Name:</strong> ${lead.name}<br><strong>Email:</strong> ${lead.email}<br><strong>Phone:</strong> ${lead.phone}</p>`,
+    }),
+  ]);
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -157,10 +182,12 @@ export async function POST(req: NextRequest) {
 
     if (hasCompleteAirtableConfig()) {
       await saveLeadToAirtable(newLead);
+      void sendEmails(newLead);
       return NextResponse.json({ ok: true, storage: "airtable" });
     }
 
     await saveLeadLocally(newLead);
+    void sendEmails(newLead);
 
     return NextResponse.json({ ok: true, storage: "local" });
   } catch (error) {

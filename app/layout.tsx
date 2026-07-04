@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+import { Instrument_Serif, Instrument_Sans, IBM_Plex_Mono } from "next/font/google";
 import TrackingScripts, { TrackingNoScript } from "@/components/TrackingScripts";
 import "./globals.css";
 
-const display = Space_Grotesk({
+const display = Instrument_Serif({
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["400"],
+  style: ["normal", "italic"],
   variable: "--font-display",
 });
-const body = Inter({
+const body = Instrument_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
   variable: "--font-body",
 });
-const mono = JetBrains_Mono({
+const mono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-mono",
@@ -21,21 +22,21 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://yoavassaf.com"),
-  title: "Yoav Assaf - AI Product Manager",
+  title: "Yoav Assaf — AI Product Manager",
   description:
-    "AI Product Manager specializing in agent-based workflows for complex B2B processes. I turn slow, manual work into fast, human-supervised products.",
+    "I take complex processes and make them simple. A product manager who builds — mostly AI, hands-on.",
   openGraph: {
-    title: "Yoav Assaf - AI Product Manager",
+    title: "Yoav Assaf — AI Product Manager",
     description:
-      "Agent-based AI workflows for complex B2B products - built hands-on.",
+      "I take complex processes and make them simple. A product manager who builds — mostly AI, hands-on.",
     type: "website",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Yoav Assaf - AI Product Manager" }],
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Yoav Assaf — AI Product Manager" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Yoav Assaf - AI Product Manager",
+    title: "Yoav Assaf — AI Product Manager",
     description:
-      "Agent-based AI workflows for complex B2B products - built hands-on.",
+      "I take complex processes and make them simple. A product manager who builds — mostly AI, hands-on.",
     images: ["/og-image.png"],
   },
 };

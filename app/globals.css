@@ -1,25 +1,27 @@
 @import "tailwindcss";
 
 :root {
-  --ink: #14161a;
-  --ink-soft: #3d434d;
-  --paper: #f7f6f3;
-  --paper-pure: #ffffff;
-  --line: #e4e2dc;
-  --signal: #2f5fff;
-  --signal-deep: #1c3fcc;
-  --slate: #6b7280;
+  --ink: #12100E;
+  --paper: #FAF9F6;
+  --about-bg: #F3F1EC;
+  --text: #1C1917;
+  --body-text: #44403C;
+  --muted: #78716C;
+  --muted-light: #A8A29E;
+  --hairline: #E7E4DE;
+  --accent: #4A6B8A;
 }
 
 @theme inline {
   --color-ink: var(--ink);
-  --color-ink-soft: var(--ink-soft);
   --color-paper: var(--paper);
-  --color-paper-pure: var(--paper-pure);
-  --color-line: var(--line);
-  --color-signal: var(--signal);
-  --color-signal-deep: var(--signal-deep);
-  --color-slate: var(--slate);
+  --color-about-bg: var(--about-bg);
+  --color-text: var(--text);
+  --color-body-text: var(--body-text);
+  --color-muted: var(--muted);
+  --color-muted-light: var(--muted-light);
+  --color-hairline: var(--hairline);
+  --color-accent: var(--accent);
   --font-display: var(--font-display);
   --font-body: var(--font-body);
   --font-mono: var(--font-mono);
@@ -27,37 +29,34 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
 body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--font-body), system-ui, sans-serif;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-body), 'Instrument Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   line-height: 1.6;
 }
 
-::selection { background: var(--signal); color: #fff; }
+::selection { background: rgba(74, 107, 138, 0.35); }
 
 a:focus-visible, button:focus-visible {
-  outline: 2px solid var(--signal);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 2px;
 }
 
 .reveal {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+  transform: translateY(14px);
+  transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
 }
 .reveal.in { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; }
 }
-
-.display { font-family: var(--font-display), system-ui, sans-serif; }
-.mono { font-family: var(--font-mono), monospace; }

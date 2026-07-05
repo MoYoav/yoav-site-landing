@@ -5,108 +5,136 @@
  * written here. To update anything (new role, new project, changed availability),
  * edit this file and redeploy — nothing else to change.
  *
- * Keep it factual and in Yoav's real voice. Do not add claims that aren't true.
+ * Keep it factual and in Yoav's real voice: calm, plain-spoken, understated.
+ * No numbers or client-specific claims — impact is described qualitatively,
+ * matching the site and resume. Do not add claims that aren't true.
  */
 
 export const KNOWLEDGE_BASE = `
 # WHO YOAV IS
 
 Yoav Assaf is an AI Product Manager. His core specialty: taking complex B2B
-processes and making them simple. He designs agent-based AI workflows with real
-context management and human-in-the-loop validation — and builds them hands-on,
-not just as specs handed to other people.
+processes and making them simple. A product manager who builds — mostly AI,
+hands-on. He designs agent-based AI workflows and builds them himself rather
+than just writing specs for others.
 
-He has 6 years of experience across product and R&D. His background — industrial
-engineering plus elite military leadership — trained him to bring clarity to
-complexity, which is the throughline of his whole career.
+He has 6 years of experience across product and R&D, with a background in
+industrial engineering that trained him to bring clarity to complexity.
 
 # POSITIONING (his one-line summary)
 
-"Product Manager for B2B and AI products. I take complex processes and make them
-simple — turning tangled workflows into products teams actually adopt."
+"I take complex processes and make them simple." He's a product manager who
+builds — mostly AI, hands-on.
 
-# WHY HE MOVED INTO PRODUCT (in his own words, paraphrased)
+# WHY HE MOVED INTO PRODUCT (his own words, paraphrased)
 
-He moved into product because he's genuinely interested in finding solutions to
-customers' problems. What he loves is going on a journey with a customer:
-discovering the real problems, finding solutions, and implementing them. That
-discovery-to-solution arc is what draws him to the work.
+He started out closer to the engineering side — an industrial engineering
+degree, then years implementing systems for customers, working directly with
+the people who had to live with what got built. That's where his instinct came
+from: understand the whole process, and the people in it, before touching a
+solution. From there he moved into R&D project management — running delivery,
+Agile and Scrum — and then into product, which is where he wanted to be all
+along: not just delivering what was decided, but deciding what's worth building.
+
+What keeps him in product is taking something tangled and making it simpler,
+and lately doing that with AI. He likes being hands-on: not handing off specs
+and hoping, but building and seeing if the thing actually holds up.
 
 # HIS STRENGTHS
 
 - Solving problems in a simple way — reducing complexity is his signature skill.
-- A people person with strong interpersonal skills. He listens well and learns
-  fast, which he considers essential soft skills for a product manager.
-- Comfortable operating under pressure and with ambiguity — able to act and make
-  progress even when things aren't clearly defined.
+- A people person more than a spec person. He listens well and learns fast,
+  which he considers essential for a product manager.
+- Comfortable when things are unclear and there's no obvious right answer —
+  able to act and make progress under ambiguity.
 - Adaptable and broad: across implementation and product roles he has solved a
   wide range of customer problems, so he picks up new domains quickly.
 
-# SELECTED AI PRODUCT WORK
+# HOW HE BUILDS AI PRODUCTS (his framework — a few things he's come to care about)
 
-## Case 1 — AI-assisted workflow consolidation (at Mobideo)
-- Replaced a fragmented, 8-person workflow with a single AI-assisted dashboard.
-- Problem: a core workflow was spread across eight users, each handling separate
-  tasks, checklists, and file uploads, with no single place to see or coordinate
-  the work. It was slow, people-heavy, and error-prone.
-- What he did: consolidated the whole process into one dashboard and embedded AI
-  agents directly into it so the system handled more of the work automatically.
-  He led the design and build largely on his own using AI tools, with light
-  developer support.
+## The structure around the model
+A model on its own isn't much. The useful part is what surrounds it — the tools
+it can call, the guardrails that keep it in bounds, the way the whole thing is
+wired together. That structure is what turns a model into something that can
+actually do the work.
+
+## The agent loop
+This is where it runs: the agent calls a tool, gets a response, decides what's
+next, and goes again. Getting that cycle right — the right tools, clean calls,
+sensible stopping points — is most of what makes an agent dependable instead of
+unpredictable.
+
+## Making it better over time
+Things break, and the skill is knowing where. Evals and a human in the loop
+catch the failures, then the fix goes to wherever the problem actually lives —
+the prompt, the context, a tool, a guardrail. Not guesswork. Diagnosis, then
+the right fix.
+
+# SELECTED AI PRODUCT WORK (described qualitatively — no specific figures)
+
+Note for the assistant: Yoav deliberately doesn't share client-specific details
+or exact metrics publicly. If someone asks for specific numbers or client names,
+explain that he keeps client specifics private and discusses impact directly in
+conversation — and point them to his email.
+
+## AI-assisted workflow consolidation
+- Replaced a fragmented, multi-person workflow with a single AI-assisted
+  dashboard.
+- The problem: a core workflow was spread across many users, each handling
+  separate tasks, checklists, and file uploads, with no single place to see or
+  coordinate the work. It was slow, people-heavy, and error-prone.
+- What he did: consolidated the whole process into one dashboard and embedded
+  AI agents directly into it so the system handled more of the work
+  automatically. He led the design and build end to end — workflow design,
+  dashboard UX, and AI-agent integration — with light developer support.
 - AI quality approach: built an evaluation and feedback loop — agent output was
   checked against expected results, and reviewer corrections fed back to improve
-  the agents over time.
-- Results: cut the team required from 8 users to 4 (a 50% reduction), and the
-  remaining 4 users saved roughly 70% of their time. Lower operating cost, faster
-  completion.
+  the agents over time, keeping quality steady as the work got leaner.
+- Result: meaningfully reduced the people and time needed to run the process.
 
-## Case 2 — AI conversion of manual procedures into digital checklists (at Mobideo)
-- Turned weeks of manual, FDA-grade procedure conversion into a fast,
-  human-in-the-loop review.
-- Problem: Mobideo customers need to convert manual instructions and procedures
-  into digital checklists to use them in the platform. Done by hand this could
-  take weeks, and in many cases the output must meet FDA standards, so accuracy
-  is critical and every error carries compliance risk.
+## AI conversion of manual procedures into digital checklists
+- Turned slow, manual procedure conversion into a fast, human-in-the-loop
+  review.
+- The problem: converting manual instructions and procedures into digital
+  checklists by hand is slow and painstaking, and in regulated settings
+  accuracy is critical — errors carry compliance risk.
 - What he did: designed an agent-based workflow with deliberate context
-  management that converts each customer's manual procedures into the digital
-  format they need, ready to use in Mobideo. Instead of doing the hard conversion
-  themselves, customers review and validate the AI's output.
-- AI quality approach: validated the workflow on about 50 sample procedures
-  through an iterative loop with subject-matter experts (SMEs). SMEs reviewed the
-  AI output, flagged errors, and their feedback was used to refine the prompts and
-  the context the agents worked from. The SME validation step stayed in place as
-  the auditable human control that kept the process compliant.
-- Results: cut conversion effort from weeks of manual work to a fast
-  review-and-validate step, while preserving FDA-grade accuracy.
+  management that converts manual procedures into ready-to-use digital forms in
+  the required format. Instead of doing the hard conversion themselves, people
+  review and validate the AI's output.
+- AI quality approach: refined the workflow through an iterative loop with
+  subject-matter experts — they reviewed the AI's output, flagged what was wrong
+  or imprecise, and their feedback improved the prompts and the context the
+  agents worked from. Expert validation stayed in place as the human control in
+  the loop.
+- Result: removed most of the manual effort while holding accuracy where it
+  mattered.
 
 # WORK HISTORY
 
-- Product Manager, Mobideo (2023–present). Leads product vision and roadmap for
-  enterprise software; designs and ships AI-agent workflows that simplify complex,
-  multi-user operational processes; works across R&D, QA, and customer-facing
-  teams; drives client onboarding and continuous product enhancement.
+- Product Manager, Mobideo (2023–present). Owns product direction for
+  enterprise software — from understanding user needs to deciding what ships.
+  Designs and ships AI-agent workflows that simplify complex, multi-user
+  operational processes; works across R&D, QA, and customer-facing teams.
 
-- R&D Project Manager, Mobideo (2021–2023). Managed software delivery across Agile
-  teams; introduced process improvements that raised team velocity and sprint
-  transparency; facilitated Scrum ceremonies and mentored team members; oversaw
-  incident response with QA and system architects; mitigated project risk.
+- R&D Project Manager, Mobideo (2021–2023). Managed software delivery across
+  Agile teams; introduced process improvements that raised team velocity and
+  sprint transparency; facilitated Scrum ceremonies and mentored team members;
+  oversaw incident response with QA and system architects.
 
 - System Implementation Specialist, Ness Digital Engineering (2020). Ran SaaS
-  implementation projects end to end — system setup, user training, support — and
-  tailored solutions to client operations.
+  implementation projects end to end — system setup, user training, support —
+  and tailored solutions to client operations.
 
 - Implementation Specialist, SRP Analytics (2019–2020). Managed customer and
   internal stakeholder expectations during onboarding and a deployment
   quality-improvement program (PMO); built a new employee training program; led
   the implementation team in close partnership with the CEO.
 
-# EDUCATION & SERVICE
+# EDUCATION
 
-- BSc, Industrial Engineering (major in Entrepreneurship and Innovation), Ruppin
-  Academic Center, 2018–2021.
-- Israel Defense Forces, Duvdevan Unit (elite commando), 2011–2014. Squad
-  Commander and First Sergeant; led and trained teams in complex, high-stakes
-  operations.
+- BSc, Industrial Engineering (major in Entrepreneurship and Innovation),
+  Ruppin Academic Center, 2018–2021.
 
 # SKILLS & TOOLS
 
@@ -156,17 +184,18 @@ want fully autonomous agent output. Human-in-the-loop means designing deliberate
 points where a human reviews, validates, or corrects before the workflow proceeds.
 Two common patterns: review-then-approve (output is held until a human signs off)
 and flag-exceptions (agent runs autonomously but surfaces low-confidence or
-out-of-scope cases for review). In Yoav's FDA-grade work, the human review step
-was not a workaround — it was the feature that made the whole system compliant.
+out-of-scope cases for review). In Yoav's regulated-industry work, the human
+review step was not a workaround — it was the feature that made the whole system
+trustworthy and auditable.
 
 ## Evals
 An eval loop is how you measure whether your agent is working. The basic form:
 take a set of known inputs with expected outputs, run the agent, compare results,
 measure error rate. What makes evals useful is iteration — when the agent fails,
 you trace the failure back to its cause (the prompt, the context, a tool, the
-stopping condition) and fix it there. Yoav ran evals against ~50 real procedures
-in his FDA workflow, with SMEs reviewing output and flagging errors. Their
-feedback fed directly back into prompt and context refinement.
+stopping condition) and fix it there. Yoav ran this pattern in his procedure-
+conversion work, with subject-matter experts reviewing output and flagging
+errors; their feedback fed directly back into prompt and context refinement.
 
 ## Prompt and context iteration
 The prompt is not a one-time thing — it's a product artifact that needs to be
@@ -199,20 +228,67 @@ environments, guardrails are not optional — they're what makes the system audi
 - Humans stay in control, especially in regulated, high-stakes settings.
 - Starts from the process, not the feature — maps the whole workflow and the
   people in it before deciding what to build or automate.
-- Builds hands-on — uses AI tools to design, prototype, and ship himself.
+- Builds hands-on — designs, prototypes, and ships himself.
+
+# A NICE DETAIL WORTH SHARING (when relevant)
+
+This assistant itself is something Yoav built — a working example of how he
+approaches AI products: a structured knowledge base as the single source of
+truth, clear guardrails on what it can and can't say, and a human (Yoav) it
+routes to whenever something needs real judgment. If someone asks whether Yoav
+really builds things hands-on, this is a fair example to mention.
+
+# COMMON QUESTIONS (answers in Yoav's voice — use these when asked)
+
+## What's he like to work with?
+A people person more than a spec person. He listens well, learns fast, and works
+closely with the people who actually live with what gets built — developers,
+QA, and the users themselves. He came up through implementation and delivery
+roles, so he's comfortable being close to the ground, not managing from a
+distance.
+
+## What kind of team or environment does he work best in?
+Teams that build and iterate rather than plan endlessly. He's at his best when
+things are somewhat unclear and there's real work to figure out — he's
+comfortable with ambiguity and doesn't need a fully defined problem to make
+progress. Hands-on cultures suit him; he'd rather prototype something and test
+it than debate it in documents.
+
+## What is he still learning or exploring?
+The AI product space moves fast and he treats staying current as part of the
+job. He's continuously deepening his practice around agent systems — evaluation
+approaches, context management patterns, and where the line between single-agent
+and multi-agent designs should sit. He'd rather say "I'm still forming a view on
+that" than pretend to certainty he doesn't have.
+
+## Why should someone consider him for an AI product role?
+Because he builds. Many product managers talk about AI; he designs the agent
+workflows, iterates the prompts and context, sets up the evaluation loops, and
+ships — hands-on. Combined with years of working directly with customers on
+complex operational processes, he brings both the technical practice and the
+instinct for what people will actually adopt.
+
+## What does he think makes AI products fail?
+Usually not the model. More often it's everything around it: unclear structure,
+no real evaluation, context that gets noisy, and no human checkpoint where one
+is needed. A demo that works once gets mistaken for a product. His whole
+approach — structure, the agent loop, improving it over time — is built around
+avoiding exactly that.
 
 # AVAILABILITY (high level only)
 
-- Based in Tel Aviv, Israel (TLV). Open to remote work.
+- Based in Thailand. Looking for fully remote work.
 - Open to both full-time and contract roles.
 - Flexible on working hours / timezone overlap.
-- Wants to continue his journey as an AI Product Manager.
+- Looking for a product role where building is part of the job, not something
+  he hands off. AI especially.
 
 # CONSULTING / FREELANCE (high level only)
 
-- Open to consulting and freelance engagements. He hasn't done standalone
-  consulting before, but he has solved problems for many customers across
-  implementation and product roles, so he's open to advisory and hands-on work.
+- Open to consulting on AI product design — agent workflows, process
+  simplification, and human-in-the-loop systems. He has solved problems for many
+  customers across implementation and product roles, and is open to advisory and
+  hands-on engagements.
 
 # CONTACT
 

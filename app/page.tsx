@@ -66,7 +66,7 @@ export default function Home() {
             Yoav Assaf
           </div>
           <div style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.08em", color: "rgba(250,249,246,0.4)" }}>
-            TLV · 2026
+            REMOTE · 2026
           </div>
         </div>
 
@@ -286,7 +286,7 @@ export default function Home() {
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", marginTop: "clamp(64px, 8vw, 96px)", paddingTop: "24px", borderTop: "1px solid rgba(250,249,246,0.1)" }}>
-            <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.08em", color: "rgba(250,249,246,0.3)" }}>YOAV ASSAF · 2026</span>
+            <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.08em", color: "rgba(250,249,246,0.3)" }}>YOAV ASSAF · REMOTE · 2026</span>
             <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.08em", color: "rgba(250,249,246,0.3)" }}>COMPLEX → SIMPLE</span>
           </div>
         </div>

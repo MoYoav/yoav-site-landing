@@ -118,6 +118,80 @@ Delivery: Agile and Scrum, software development lifecycle, cross-functional
 leadership, risk mitigation, client onboarding and implementation, system
 integration, stakeholder management.
 
+# AI AGENT SYSTEMS — PRACTICAL KNOWLEDGE
+
+This section covers how Yoav actually thinks about and builds AI agent systems,
+and can be used to answer deeper technical or conceptual questions.
+
+## The agent loop
+An agent loop is the core pattern: the model receives input, decides on an action
+(often a tool call), gets back the result, and decides what to do next — repeating
+until it reaches a stopping condition. The loop sounds simple but most of the hard
+work is in the details: what tools the agent has access to, how results are fed
+back, and when the loop stops. Without clear stopping conditions, agents run too
+long, go in circles, or take actions they shouldn't. Yoav thinks about the loop as
+infrastructure — it needs to be reliable before the model's intelligence matters.
+
+## Context management
+The context window is everything the model can see when it makes a decision. It
+degrades in two ways: it fills up (hitting token limits), and it gets noisy
+(irrelevant information crowds out what matters). Good context management means
+being deliberate about what goes in — structured inputs, relevant history, the
+right amount of prior output. Common patterns include summarizing long histories
+rather than passing them wholesale, injecting only the relevant slice of a
+knowledge base for each step, and keeping a structured working memory the agent
+can read and update. Poor context management is one of the most common reasons
+agent outputs get worse the longer a workflow runs.
+
+## Tool use
+Agents call tools to interact with the world — querying a database, calling an
+API, reading a file, writing an output. The quality of the tool definition matters
+as much as the model: clear parameter names, good descriptions, and explicit
+constraints on what the tool expects. Yoav treats tool design like API design —
+ambiguous tools produce ambiguous calls.
+
+## Human-in-the-loop
+In many real workflows, especially in regulated or high-stakes settings, you don't
+want fully autonomous agent output. Human-in-the-loop means designing deliberate
+points where a human reviews, validates, or corrects before the workflow proceeds.
+Two common patterns: review-then-approve (output is held until a human signs off)
+and flag-exceptions (agent runs autonomously but surfaces low-confidence or
+out-of-scope cases for review). In Yoav's FDA-grade work, the human review step
+was not a workaround — it was the feature that made the whole system compliant.
+
+## Evals
+An eval loop is how you measure whether your agent is working. The basic form:
+take a set of known inputs with expected outputs, run the agent, compare results,
+measure error rate. What makes evals useful is iteration — when the agent fails,
+you trace the failure back to its cause (the prompt, the context, a tool, the
+stopping condition) and fix it there. Yoav ran evals against ~50 real procedures
+in his FDA workflow, with SMEs reviewing output and flagging errors. Their
+feedback fed directly back into prompt and context refinement.
+
+## Prompt and context iteration
+The prompt is not a one-time thing — it's a product artifact that needs to be
+maintained. Most prompt failures are actually context failures: the model had the
+right capability but the wrong information, or too much irrelevant information.
+Yoav's approach: treat the prompt as a hypothesis, run it against real inputs,
+look at failure modes, and fix the specific thing that caused each failure. Not
+guesswork — diagnosis first.
+
+## Orchestration: single-agent vs. multi-agent
+A single agent with good tools can handle most workflows. Multi-agent systems
+(where one agent coordinates others) add complexity fast — more failure points,
+harder to debug, more expensive to run. Yoav's default is to stay single-agent
+as long as possible and only split into multiple agents when a task genuinely
+needs parallel execution or a clear separation of concerns. Complexity should be
+earned, not assumed.
+
+## Guardrails
+Guardrails are the checks that keep an agent from producing bad output or taking
+wrong actions. They include: output validation (does the result meet the expected
+format or constraints?), retry logic (if validation fails, try again with adjusted
+input), fallback paths (if retries fail, route to a human or return a safe
+default), and scope limits (block actions outside the defined task). In regulated
+environments, guardrails are not optional — they're what makes the system auditable.
+
 # HOW HE WORKS
 
 - AI as the engine, not the gimmick — agent workflows that do real work, with
@@ -129,7 +203,7 @@ integration, stakeholder management.
 
 # AVAILABILITY (high level only)
 
-- Based in Thailand and looking for fully remote work.
+- Based in Tel Aviv, Israel (TLV). Open to remote work.
 - Open to both full-time and contract roles.
 - Flexible on working hours / timezone overlap.
 - Wants to continue his journey as an AI Product Manager.

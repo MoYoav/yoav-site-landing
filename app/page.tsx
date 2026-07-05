@@ -24,6 +24,21 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const handler = (e: CustomEvent) => {
+      const { action, target } = e.detail as { action: string; target: string | null };
+      if (action === "scroll" && target) {
+        document.getElementById(target)?.scrollIntoView({ behavior: "smooth" });
+      }
+      if (action === "open-contact") {
+        document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
+        setTimeout(() => document.getElementById("lf-name")?.focus(), 600);
+      }
+    };
+    window.addEventListener("assistant-action", handler as EventListener);
+    return () => window.removeEventListener("assistant-action", handler as EventListener);
+  }, []);
+
   const addReveal = (el: HTMLElement | null) => {
     if (el && !revealRefs.current.includes(el)) {
       revealRefs.current.push(el);
@@ -258,7 +273,6 @@ export default function Home() {
               <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
                 <ContactButton href="mailto:yoavs217@gmail.com">yoavs217@gmail.com</ContactButton>
                 <ContactButton href="https://linkedin.com/in/yoav-assaf-b82b3518b" target="_blank">LinkedIn</ContactButton>
-                <ContactButton href="/Resume.pdf" target="_blank">Resume PDF</ContactButton>
               </div>
             </div>
 

@@ -1,41 +1,44 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 
-/**
- * Floating AI assistant for the site. Matches the site's brand (ink / signal-blue
- * / paper, Space Grotesk + Inter). Talks only to /api/assistant - never to
- * Anthropic directly, so the API key stays server-side.
- *
- * Drop <Assistant /> once in app/page.tsx (or in the layout) and it appears as a
- * button in the bottom-right corner.
- */
-
 type Msg = { role: "user" | "assistant"; content: string };
+
+const ACTION_RE = /\[ACTION:(scroll|open-contact)(?::([^\]]+))?\]\s*$/m;
+
+function parseAction(text: string): { clean: string; action: string | null; target: string | null } {
+  const match = text.match(ACTION_RE);
+  if (!match) return { clean: text.trim(), action: null, target: null };
+  const clean = text.replace(ACTION_RE, "").trim();
+  return { clean, action: match[1], target: match[2] ?? null };
+}
+
+function triggerPageAction(action: string, target: string | null) {
+  window.dispatchEvent(new CustomEvent("assistant-action", { detail: { action, target } }));
+}
 
 function renderText(text: string) {
   const parts = text.split(/(https?:\/\/[^\s]+|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g);
   return parts.map((part, i) => {
     if (/^https?:\/\//.test(part)) {
-      return <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: "var(--signal, #2f5fff)", textDecoration: "underline" }}>{part}</a>;
+      return <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: "#4A6B8A", textDecoration: "underline" }}>{part}</a>;
     }
     if (/@/.test(part) && /\.[a-zA-Z]{2,}$/.test(part)) {
-      return <a key={i} href={`mailto:${part}`} style={{ color: "var(--signal, #2f5fff)", textDecoration: "underline" }}>{part}</a>;
+      return <a key={i} href={`mailto:${part}`} style={{ color: "#4A6B8A", textDecoration: "underline" }}>{part}</a>;
     }
     return part;
   });
 }
 
 const SUGGESTIONS = [
-  "What's his experience with AI agent workflows?",
-  "Tell me about a project he's proud of",
+  "How does Yoav approach agent workflows?",
   "What kind of role is he looking for?",
+  "Tell me about his AI product work",
 ];
 
 const GREETING: Msg = {
   role: "assistant",
-  content:
-    "Hi! I'm Yoav's assistant. Ask me about his experience with AI products, his case studies, or how he works. For anything specific like scheduling, I'll point you his way.",
+  content: "Hi. I'm Yoav's assistant — ask me about his background, how he builds with AI, or what he's looking for. I can also point you to the right part of the site.",
 };
 
 export default function Assistant() {
@@ -62,24 +65,20 @@ export default function Assistant() {
       const res = await fetch("/api/assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // send only the real exchange (skip the local greeting)
         body: JSON.stringify({ messages: next.filter((m) => m !== GREETING) }),
       });
       const data = await res.json();
-      const reply =
-        data?.reply ||
-        data?.error ||
-        "Sorry, something went wrong. You can reach Yoav at yoavs217@gmail.com.";
-      setMessages((m) => [...m, { role: "assistant", content: reply }]);
+      const raw: string = data?.reply || data?.error || "Sorry, something went wrong. You can reach Yoav at yoavs217@gmail.com.";
+
+      const { clean, action, target } = parseAction(raw);
+
+      setMessages((m) => [...m, { role: "assistant", content: clean }]);
+
+      if (action) {
+        setTimeout(() => triggerPageAction(action, target), 300);
+      }
     } catch {
-      setMessages((m) => [
-        ...m,
-        {
-          role: "assistant",
-          content:
-            "I couldn't connect just now. Please try again, or email Yoav at yoavs217@gmail.com.",
-        },
-      ]);
+      setMessages((m) => [...m, { role: "assistant", content: "I couldn't connect just now. Please try again, or email Yoav at yoavs217@gmail.com." }]);
     } finally {
       setLoading(false);
     }
@@ -87,7 +86,7 @@ export default function Assistant() {
 
   return (
     <>
-      {/* Launcher button */}
+      {/* Launcher */}
       <button
         onClick={() => setOpen((o) => !o)}
         aria-label={open ? "Close assistant" : "Ask Yoav's assistant"}
@@ -96,103 +95,79 @@ export default function Assistant() {
           bottom: "1.5rem",
           right: "1.5rem",
           zIndex: 60,
-          height: "3.5rem",
-          padding: open ? "0 1rem" : "0 1.25rem",
+          height: "2.75rem",
+          padding: "0 1.25rem",
           borderRadius: "999px",
-          border: "none",
-          background: "var(--ink, #14161a)",
-          color: "var(--paper, #f7f6f3)",
-          fontFamily: "var(--font-display), system-ui, sans-serif",
-          fontWeight: 600,
-          fontSize: "0.95rem",
+          border: "1px solid rgba(250,249,246,0.2)",
+          background: "#12100E",
+          color: "#FAF9F6",
+          fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace",
+          fontSize: "12px",
+          letterSpacing: "0.06em",
           cursor: "pointer",
-          boxShadow: "0 6px 24px rgba(0,0,0,0.18)",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
           display: "flex",
           alignItems: "center",
           gap: "0.5rem",
         }}
       >
-        <span
-          style={{
-            width: 8,
-            height: 8,
-            borderRadius: "50%",
-            background: "var(--signal, #2f5fff)",
-            display: "inline-block",
-          }}
-        />
-        {open ? "Close" : "Ask me anything"}
+        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4A6B8A", display: "inline-block", flexShrink: 0 }} />
+        {open ? "CLOSE" : "ASK ME ANYTHING"}
       </button>
 
-      {/* Chat panel */}
+      {/* Panel */}
       {open && (
         <div
           role="dialog"
           aria-label="Assistant"
           style={{
             position: "fixed",
-            bottom: "5.5rem",
+            bottom: "5rem",
             right: "1.5rem",
             zIndex: 60,
-            width: "min(380px, calc(100vw - 3rem))",
-            height: "min(560px, calc(100vh - 8rem))",
-            background: "var(--paper-pure, #fff)",
-            border: "1px solid var(--line, #e4e2dc)",
-            borderRadius: "1rem",
-            boxShadow: "0 12px 48px rgba(0,0,0,0.20)",
+            width: "min(400px, calc(100vw - 3rem))",
+            height: "min(540px, calc(100vh - 8rem))",
+            background: "#12100E",
+            border: "1px solid rgba(250,249,246,0.12)",
+            borderRadius: "4px",
+            boxShadow: "0 16px 56px rgba(0,0,0,0.5)",
             display: "flex",
             flexDirection: "column",
             overflow: "hidden",
           }}
         >
           {/* Header */}
-          <div
-            style={{
-              padding: "0.9rem 1rem",
-              borderBottom: "1px solid var(--line, #e4e2dc)",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.6rem",
-            }}
-          >
-            <span
-              style={{
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                background: "var(--signal, #2f5fff)",
-              }}
-            />
-            <div
-              style={{
-                fontFamily: "var(--font-display), system-ui, sans-serif",
-                fontWeight: 600,
-                fontSize: "0.95rem",
-                color: "var(--ink, #14161a)",
-              }}
-            >
-              Yoav&apos;s Assistant
-            </div>
+          <div style={{
+            padding: "14px 16px",
+            borderBottom: "1px solid rgba(250,249,246,0.08)",
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+          }}>
+            <span style={{ display: "block", width: "18px", height: "1px", background: "#4A6B8A", flexShrink: 0 }} />
+            <span style={{ fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", fontSize: "11px", letterSpacing: "0.14em", color: "rgba(250,249,246,0.5)" }}>
+              YOAV&apos;S ASSISTANT
+            </span>
           </div>
 
           {/* Messages */}
           <div
             ref={scrollRef}
-            style={{ flex: 1, overflowY: "auto", padding: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}
+            style={{ flex: 1, overflowY: "auto", padding: "16px", display: "flex", flexDirection: "column", gap: "12px" }}
           >
             {messages.map((m, i) => (
               <div
                 key={i}
                 style={{
                   alignSelf: m.role === "user" ? "flex-end" : "flex-start",
-                  maxWidth: "85%",
-                  padding: "0.6rem 0.8rem",
-                  borderRadius: "0.8rem",
-                  fontSize: "0.9rem",
-                  lineHeight: 1.5,
+                  maxWidth: "88%",
+                  padding: m.role === "user" ? "8px 12px" : "0",
+                  borderRadius: m.role === "user" ? "4px" : "0",
+                  fontSize: "14px",
+                  lineHeight: 1.55,
                   whiteSpace: "pre-wrap",
-                  background: m.role === "user" ? "var(--ink, #14161a)" : "var(--paper, #f4f3ef)",
-                  color: m.role === "user" ? "var(--paper, #f7f6f3)" : "var(--ink, #14161a)",
+                  background: m.role === "user" ? "rgba(250,249,246,0.08)" : "transparent",
+                  color: m.role === "user" ? "#FAF9F6" : "rgba(250,249,246,0.82)",
                 }}
               >
                 {m.role === "assistant" ? renderText(m.content) : m.content}
@@ -200,26 +175,28 @@ export default function Assistant() {
             ))}
 
             {loading && (
-              <div style={{ alignSelf: "flex-start", color: "var(--slate, #6b7280)", fontSize: "0.85rem", padding: "0.4rem 0.2rem" }}>
-                thinking...
+              <div style={{ alignSelf: "flex-start", color: "rgba(250,249,246,0.3)", fontSize: "13px", fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", letterSpacing: "0.06em" }}>
+                ...
               </div>
             )}
 
-            {/* Suggestions (only before the first user message) */}
             {messages.length === 1 && !loading && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginTop: "0.3rem" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "4px" }}>
                 {SUGGESTIONS.map((s) => (
                   <button
                     key={s}
                     onClick={() => send(s)}
                     style={{
-                      fontSize: "0.8rem",
-                      padding: "0.4rem 0.7rem",
-                      borderRadius: "999px",
-                      border: "1px solid var(--line, #e4e2dc)",
+                      fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace",
+                      fontSize: "11px",
+                      letterSpacing: "0.04em",
+                      padding: "6px 10px",
+                      borderRadius: "4px",
+                      border: "1px solid rgba(250,249,246,0.15)",
                       background: "transparent",
-                      color: "var(--ink-soft, #3d434d)",
+                      color: "rgba(250,249,246,0.55)",
                       cursor: "pointer",
+                      textAlign: "left",
                     }}
                   >
                     {s}
@@ -230,7 +207,7 @@ export default function Assistant() {
           </div>
 
           {/* Input */}
-          <div style={{ borderTop: "1px solid var(--line, #e4e2dc)", padding: "0.7rem", display: "flex", gap: "0.5rem" }}>
+          <div style={{ borderTop: "1px solid rgba(250,249,246,0.08)", padding: "10px 12px", display: "flex", gap: "8px" }}>
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -239,32 +216,40 @@ export default function Assistant() {
               maxLength={1000}
               style={{
                 flex: 1,
-                border: "1px solid var(--line, #e4e2dc)",
-                borderRadius: "0.6rem",
-                padding: "0.55rem 0.7rem",
-                fontSize: "0.9rem",
-                fontFamily: "var(--font-body), system-ui, sans-serif",
+                background: "rgba(250,249,246,0.05)",
+                border: "1px solid rgba(250,249,246,0.15)",
+                borderRadius: "4px",
+                padding: "9px 12px",
+                fontSize: "14px",
+                fontFamily: "var(--font-body), 'Instrument Sans', system-ui, sans-serif",
                 outline: "none",
-                background: "var(--paper, #f7f6f3)",
-                color: "var(--ink, #14161a)",
+                color: "#FAF9F6",
+                transition: "border-color 0.2s ease",
               }}
+              onFocus={(e) => { (e.target as HTMLInputElement).style.borderColor = "#4A6B8A"; }}
+              onBlur={(e) => { (e.target as HTMLInputElement).style.borderColor = "rgba(250,249,246,0.15)"; }}
             />
             <button
               onClick={() => send(input)}
               disabled={loading || !input.trim()}
               style={{
-                border: "none",
-                borderRadius: "0.6rem",
-                padding: "0 1rem",
-                background: "var(--signal, #2f5fff)",
-                color: "#fff",
-                fontWeight: 600,
-                fontSize: "0.9rem",
+                fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace",
+                fontSize: "11px",
+                letterSpacing: "0.06em",
+                border: "1px solid #4A6B8A",
+                borderRadius: "4px",
+                padding: "0 14px",
+                background: "transparent",
+                color: "#FAF9F6",
                 cursor: loading || !input.trim() ? "default" : "pointer",
-                opacity: loading || !input.trim() ? 0.5 : 1,
+                opacity: loading || !input.trim() ? 0.4 : 1,
+                transition: "background 0.2s ease",
+                whiteSpace: "nowrap",
               }}
+              onMouseEnter={(e) => { if (!loading && input.trim()) (e.currentTarget as HTMLButtonElement).style.background = "rgba(74,107,138,0.2)"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.background = "transparent"; }}
             >
-              Send
+              SEND
             </button>
           </div>
         </div>

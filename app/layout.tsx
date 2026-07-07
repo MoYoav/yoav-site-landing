@@ -30,14 +30,12 @@ export const metadata: Metadata = {
     description:
       "I take complex processes and make them simple. A product manager who builds — mostly AI, hands-on.",
     type: "website",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Yoav Assaf — AI Product Manager" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Yoav Assaf — AI Product Manager",
     description:
       "I take complex processes and make them simple. A product manager who builds — mostly AI, hands-on.",
-    images: ["/og-image.png"],
   },
 };
 

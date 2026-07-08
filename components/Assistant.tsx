@@ -34,6 +34,8 @@ const SUGGESTIONS = [
   "How does Yoav approach agent workflows?",
   "What kind of role is he looking for?",
   "Tell me about his AI product work",
+  "What makes him different as a PM?",
+  "How can I contact him?",
 ];
 
 const GREETING: Msg = {
@@ -46,15 +48,17 @@ export default function Assistant() {
   const [messages, setMessages] = useState<Msg[]>([GREETING]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [usedSuggestions, setUsedSuggestions] = useState<Set<string>>(new Set());
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
 
-  async function send(text: string) {
+  async function send(text: string, isSuggestion = false) {
     const content = text.trim();
     if (!content || loading) return;
+    if (isSuggestion) setUsedSuggestions((prev) => new Set(prev).add(content));
 
     const next = [...messages, { role: "user" as const, content }];
     setMessages(next);
@@ -175,17 +179,36 @@ export default function Assistant() {
             ))}
 
             {loading && (
-              <div style={{ alignSelf: "flex-start", color: "rgba(250,249,246,0.3)", fontSize: "13px", fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace", letterSpacing: "0.06em" }}>
-                ...
+              <div style={{ alignSelf: "flex-start", display: "flex", alignItems: "center", gap: "5px", padding: "4px 0" }}>
+                {[0, 1, 2].map((i) => (
+                  <span
+                    key={i}
+                    style={{
+                      width: 5,
+                      height: 5,
+                      borderRadius: "50%",
+                      background: "#4A6B8A",
+                      display: "inline-block",
+                      animation: "assistantDot 1.2s ease-in-out infinite",
+                      animationDelay: `${i * 0.2}s`,
+                    }}
+                  />
+                ))}
+                <style>{`
+                  @keyframes assistantDot {
+                    0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+                    40% { opacity: 1; transform: scale(1.15); }
+                  }
+                `}</style>
               </div>
             )}
 
-            {messages.length === 1 && !loading && (
+            {messages[messages.length - 1]?.role === "assistant" && !loading && SUGGESTIONS.filter((s) => !usedSuggestions.has(s)).length > 0 && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "4px" }}>
-                {SUGGESTIONS.map((s) => (
+                {SUGGESTIONS.filter((s) => !usedSuggestions.has(s)).slice(0, 3).map((s) => (
                   <button
                     key={s}
-                    onClick={() => send(s)}
+                    onClick={() => send(s, true)}
                     style={{
                       fontFamily: "var(--font-mono), 'IBM Plex Mono', monospace",
                       fontSize: "11px",
